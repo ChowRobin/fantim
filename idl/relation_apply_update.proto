@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package vo;
+
+message relation_apply_update_request {
+    int64 apply_id = 1;
+    int32 status = 2;
+}
+
+message relation_apply_update_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+}

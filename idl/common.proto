@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package vo;
+
+message User {
+    int64 user_id = 1;
+    string nickname = 2;
+    string avatar = 3;
+}
+
+message MessageBody {
+    int32 conversation_type = 1;
+    string conversation_id = 2;
+    int32 msg_type = 3;
+    string content = 4;
+    map<string, string> ext = 5; // 附加信息
+    int32 status = 6; // 0->发送成功
+    int64 create_time = 7;
+    int64 sender = 8; // 发送者
+    int64 msg_id = 9; // 消息id
+    string msg_id_str = 10; // 消息id string类型，兼容前端
+}
+
+message PushMessage {
+    int32 push_type = 1; // 0->私信消息
+    MessageBody body = 2; // 消息体
+    int32 index = 3; // 消息index
+}
+
+message RelationApply {
+    int64 from_user_id = 1;
+    int64 to_user_id = 2;
+    int32 apply_type = 3;
+    int32 status = 4;
+    string content = 5;
+    int64 apply_id = 6;
+    User from_user_info = 7;
+}

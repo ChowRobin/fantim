@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package vo;
+
+message message_send_request {
+    int64 sender = 1;
+    int64 receiver = 2;
+    int32 inbox_type = 3; // 0->用户链（用户链+会话链都写）1->会话链
+    int32 conversation_type = 4;
+    string conversation_id = 5; // 私聊 0:a:b
+    int32 msg_type = 6;
+    string content = 7;
+    map<string, string> ext = 8;
+}
+
+message message_send_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+    int64 msg_id = 3;
+}

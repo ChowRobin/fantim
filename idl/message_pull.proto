@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package vo;
+
+import "common.proto";
+
+message message_pull_request {
+    int64 receiver = 1;
+    int64 cursor = 2;
+    int32 count = 3;
+    string conversation_id = 4;
+    int32 conversation_type = 5;
+    int32 inbox_type = 6;
+    string msg_id_str = 7;
+}
+
+message message_pull_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+    repeated MessageBody message_list = 3;
+    int64 cursor = 4;
+    bool has_more = 5;
+}
