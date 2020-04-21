@@ -52,6 +52,8 @@ func (ur *UserRelation) GetByCondition(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	defer client.CloseDBConn(ctx)
 	err = conn.Model(ur).Where("from_uid=? AND to_uid=?", ur.FromUserId, ur.ToUserId).First(ur).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil
@@ -64,6 +66,7 @@ func ListUserRelationByFrom(ctx context.Context, fromUserId int64, status int32)
 	if err != nil {
 		return nil, err
 	}
+	defer client.CloseDBConn(ctx)
 	var rels []*UserRelation
 	err = conn.Model(&UserRelation{}).Where("from_uid=? and status=?", fromUserId, status).Find(&rels).Error
 	if err == gorm.ErrRecordNotFound {

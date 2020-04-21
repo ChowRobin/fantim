@@ -2,6 +2,8 @@ package util
 
 import (
 	"errors"
+	"fmt"
+	"github.com/ChowRobin/fantim/constant"
 	"sync"
 	"time"
 )
@@ -63,4 +65,12 @@ func (s *Snowflake) GetId() (int64, error) {
 func GenId() int64 {
 	id, _ := sf.GetId()
 	return id
+}
+
+func GenConversationId(sender, receiver int64) string {
+	if sender < receiver {
+		return fmt.Sprintf(constant.ConversationIdPatternSingle, sender, receiver)
+	} else {
+		return fmt.Sprintf(constant.ConversationIdPatternSingle, receiver, sender)
+	}
 }

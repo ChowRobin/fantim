@@ -30,6 +30,7 @@ func (ua *UserRelationApply) Create(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.CloseDBConn(ctx)
 	return conn.Create(ua).Error
 }
 
@@ -38,6 +39,7 @@ func (ua *UserRelationApply) Update(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.CloseDBConn(ctx)
 	err = conn.Model(ua).Where("id=?", ua.Id).UpdateColumn("status", ua.Status).Error
 	if err != nil {
 		conn.Rollback()
@@ -50,6 +52,7 @@ func (ua *UserRelationApply) GetById(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.CloseDBConn(ctx)
 	return conn.Model(ua).Where("id=?", ua.Id).First(ua).Error
 }
 
@@ -58,6 +61,7 @@ func (ua *UserRelationApply) GetByCondition(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	defer client.CloseDBConn(ctx)
 	return conn.Model(ua).Where("from_uid=? and to_uid=? and apply_type=? and status=?",
 		ua.FromUserId, ua.ToUserId, ua.ApplyType, ua.Status).First(ua).Error
 }
@@ -67,6 +71,7 @@ func ListUserRelationApplyPageByCondition(ctx context.Context, fromUid, toUid *i
 	if err != nil {
 		return nil, err
 	}
+	defer client.CloseDBConn(ctx)
 	if fromUid != nil {
 		conn = conn.Where("from_uid=?", fromUid)
 	} else if toUid != nil {
@@ -91,6 +96,7 @@ func CountUserRelationApplyPageByCondition(ctx context.Context, fromUid, toUid *
 	if err != nil {
 		return 0, err
 	}
+	defer client.CloseDBConn(ctx)
 	if fromUid != nil {
 		conn = conn.Where("from_uid=?", fromUid)
 	} else if toUid != nil {

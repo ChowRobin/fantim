@@ -34,11 +34,12 @@ func Send(c *gin.Context) interface{} {
 		Content:          req.Content,
 		Ext:              req.Ext,
 		Sender:           userId,
+		Receiver:         req.Receiver,
 	}
-	msgId, err := service.SendMessage(c, msgVo)
-	if err != nil {
-		log.Printf("[Send] service.SendMessage failed. err=%v", err)
-		return status.FillResp(resp, status.ErrServiceInternal)
+	msgId, s := service.SendMessage(c, msgVo)
+	if s != status.Success {
+		log.Printf("[Send] service.SendMessage failed. status=%v", s.Msg)
+		return status.FillResp(resp, s)
 	}
 
 	resp.MsgId = msgId

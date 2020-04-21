@@ -19,6 +19,7 @@ message MessageBody {
     int64 sender = 8; // 发送者
     int64 msg_id = 9; // 消息id
     string msg_id_str = 10; // 消息id string类型，兼容前端
+    int64 receiver = 11; // 接收方id，可不指定conversation_id，服务端根据receiver自动生成
 }
 
 message PushMessage {

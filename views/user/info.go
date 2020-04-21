@@ -35,6 +35,7 @@ func Info(c *gin.Context) interface{} {
 	resp.UserInfo = &vo.User{
 		UserId:   userPo.UserId,
 		Nickname: userPo.Nickname,
+		Avatar:   userPo.Avatar,
 	}
 
 	return status.FillResp(resp, status.Success)

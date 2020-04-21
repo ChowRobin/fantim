@@ -6,12 +6,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-
+	"github.com/ChowRobin/fantim/constant/status"
 	"github.com/ChowRobin/fantim/manager"
 	"github.com/ChowRobin/fantim/model/vo"
 	"github.com/ChowRobin/fantim/service"
 	"github.com/ChowRobin/fantim/util"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
 
@@ -56,15 +56,26 @@ func Handle(c *gin.Context) {
 			continue
 		}
 
-		userId = msg.Body.Sender
+		// 初始化uid消息
+		if msg.PushType == 0 {
+			userId = msg.Body.Sender
+			if userId == 0 {
+				log.Printf("[websocket.Handle] userId is 0")
+				continue
+			}
+		}
+
 		if err = manager.RegisterUserLongConn(userId, connId, ws); err != nil {
 			log.Printf("[connection.Handle] RegisterUserLongConn failed. err=%v", err)
 		}
 
-		ctx := context.Background()
-		_, err = service.SendMessage(ctx, msg.Body)
-		if err != nil {
-			log.Printf("[connection.Handle] service.SendMessage failed. err=%v", err)
+		if msg.PushType == 1 {
+			msg.Body.Sender = userId
+			ctx := context.Background()
+			_, es := service.SendMessage(ctx, msg.Body)
+			if es != status.Success {
+				log.Printf("[connection.Handle] service.SendMessage failed. err=%v", es.Msg)
+			}
 		}
 	}
 }

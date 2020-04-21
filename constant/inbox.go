@@ -13,3 +13,7 @@ const (
 	InboxTypeUser         = 0
 	InboxTypeConversation = 1
 )
+
+const (
+	ConversationIdPatternSingle = "0:%d:%d" // 私聊
+)

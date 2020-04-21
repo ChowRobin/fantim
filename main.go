@@ -15,7 +15,19 @@ func main() {
 	r := gin.Default()
 
 	store := cookie.NewStore([]byte("secret"))
+	/**
+	store.Options(sessions.Options{
+		Path:     "/",
+		Domain:   "localhost:3000",
+		MaxAge:   int(time.Hour * 24 * 3),
+		Secure:   false,
+		HttpOnly: false,
+		SameSite: 0,
+	})
+
+	*/
 	r.Use(sessions.Sessions("session_id", store))
+	r.Use(middleware.Cors())
 
 	needLogin := middleware.ApiOption{
 		Key: "login",
@@ -26,7 +38,7 @@ func main() {
 	r.GET("/user/info/", middleware.ApiDecorator(user.Info, needLogin))
 
 	r.POST("/message/send/", middleware.ApiDecorator(message.Send, needLogin))
-	r.GET("/message/pull/", middleware.ApiDecorator(message.Pull, needLogin))
+	r.POST("/message/pull/", middleware.ApiDecorator(message.Pull, needLogin))
 	r.GET("/websocket/create/", connection.Handle)
 
 	r.POST("/relation/apply/create/", middleware.ApiDecorator(relation.CreateApply, needLogin))

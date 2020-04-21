@@ -54,5 +54,20 @@ func CommitDBTransaction(ctx context.Context) error {
 		return err
 	}
 	conn.Commit()
+	conn.Close()
+	return nil
+}
+
+func CloseDBConn(ctx context.Context) error {
+	connItf := ctx.Value("DBConn")
+	conn, ok := connItf.(*gorm.DB)
+	// 该连接为事务连接，不主动关闭
+	if ok && conn != nil {
+		return nil
+	} else {
+		if conn, _ = DBConn(ctx); conn != nil {
+			conn.Close()
+		}
+	}
 	return nil
 }

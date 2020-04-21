@@ -74,6 +74,7 @@ type MessageBody struct {
 	Sender           int64             `protobuf:"varint,8,opt,name=sender" json:"sender,omitempty"`
 	MsgId            int64             `protobuf:"varint,9,opt,name=msg_id,json=msgId" json:"msg_id,omitempty"`
 	MsgIdStr         string            `protobuf:"bytes,10,opt,name=msg_id_str,json=msgIdStr" json:"msg_id_str,omitempty"`
+	Receiver         int64             `protobuf:"varint,11,opt,name=receiver" json:"receiver,omitempty"`
 }
 
 func (m *MessageBody) Reset()         { *m = MessageBody{} }
@@ -148,6 +149,13 @@ func (m *MessageBody) GetMsgIdStr() string {
 		return m.MsgIdStr
 	}
 	return ""
+}
+
+func (m *MessageBody) GetReceiver() int64 {
+	if m != nil {
+		return m.Receiver
+	}
+	return 0
 }
 
 type PushMessage struct {
