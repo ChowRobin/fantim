@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -30,9 +29,9 @@ func ApiDecorator(apiFunc ApiFunc, options ...ApiOption) func(*gin.Context) {
 					s := sessions.Default(c)
 					uid := s.Get("user_id")
 
-					if c.Query("user_id") != "" {
-						uid, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
-					}
+					//if c.Query("user_id") != "" {
+					//	uid, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
+					//}
 
 					if uid == nil || uid == 0 {
 						resp = map[string]interface{}{

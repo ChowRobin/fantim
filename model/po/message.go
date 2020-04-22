@@ -36,8 +36,7 @@ func (m *MessageRecord) Create(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	return conn.Create(m).Error
 }
 
@@ -46,8 +45,7 @@ func (m *MessageRecord) Update(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	return conn.Model(m).Update(m).Error
 }
 
@@ -76,7 +74,7 @@ func ListMessageByConversation(ctx context.Context, conversationId string, count
 	if err != nil {
 		return nil, err
 	}
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	var list []*MessageRecord
 	err = conn.Where("conversation_id=?", conversationId).
 		Order("msg_id desc").Limit(count).Find(&list).Error
@@ -92,7 +90,7 @@ func ListByConversationAndMsgId(ctx context.Context, conversationId string, msgI
 		return nil, err
 	}
 	var list []*MessageRecord
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	conn = conn.Debug()
 	err = conn.Where("conversation_id=? and msg_id < ?", conversationId, msgId).Limit(count).
 		Order("msg_id desc").Find(&list).Error

@@ -29,7 +29,7 @@ func (u *User) Create(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	return conn.Create(u).Error
 }
 
@@ -38,7 +38,7 @@ func (u *User) GetByUserId(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	err = conn.Model(u).Where("uid=?", u.UserId).First(&u).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil
@@ -51,7 +51,7 @@ func MultiGetUserByUserId(ctx context.Context, userIds []int64) ([]*User, error)
 	if err != nil {
 		return nil, err
 	}
-	defer client.CloseDBConn(ctx)
+	defer conn.Close()
 	var result []*User
 	err = conn.Model(&User{}).Where("uid in (?)", userIds).Find(&result).Error
 	if err == gorm.ErrRecordNotFound {
