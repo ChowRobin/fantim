@@ -15,6 +15,7 @@ func ListApply(c *gin.Context) interface{} {
 
 	// 校验参数合法性
 	userId := c.GetInt64("user_id")
+	fromUserId, _ := strconv.ParseInt(c.Query("from_user_id"), 10, 64)
 	applyType, _ := strconv.Atoi(c.Query("apply_type"))
 	page, _ := strconv.Atoi(c.Query("page"))
 	pageSize, _ := strconv.Atoi(c.Query("page_size"))
@@ -30,8 +31,19 @@ func ListApply(c *gin.Context) interface{} {
 		return status.FillResp(resp, status.ErrInvalidParam)
 	}
 
+	var fromUserPtr, toUserPtr *int64
+	if fromUserId != 0 {
+		fromUserPtr = &fromUserId
+		// 不允许查其他人的申请列表
+		if fromUserId != userId {
+			return status.FillResp(resp, status.ErrInvalidParam)
+		}
+	} else {
+		toUserPtr = &userId
+	}
+
 	// 查询总数
-	totalNum, err := po.CountUserRelationApplyPageByCondition(c, nil, &userId, queryStatus, int32(applyType))
+	totalNum, err := po.CountUserRelationApplyPageByCondition(c, fromUserPtr, toUserPtr, queryStatus, int32(applyType))
 	if err != nil {
 		log.Printf("[ListApply] po.CountUserRelationApplyPageByCondition failed. err=%v", err)
 		return status.FillResp(resp, status.ErrServiceInternal)
@@ -45,7 +57,7 @@ func ListApply(c *gin.Context) interface{} {
 	}
 
 	// 分页查询记录
-	applyPoList, err := po.ListUserRelationApplyPageByCondition(c, nil, &userId, queryStatus, int32(applyType), int32(page), int32(pageSize))
+	applyPoList, err := po.ListUserRelationApplyPageByCondition(c, fromUserPtr, toUserPtr, queryStatus, int32(applyType), int32(page), int32(pageSize))
 	if err != nil {
 		log.Printf("[ListApply] po.ListUserRelationApplyPageByCondition failed. err=%v", err)
 		return status.FillResp(resp, status.ErrServiceInternal)
