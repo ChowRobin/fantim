@@ -12,8 +12,8 @@ import (
 type UserRelationApply struct {
 	Id         int64  `gorm:"primary_key"`
 	FromUserId int64  `gorm:"column:from_uid"`
-	ToUserId   int64  `gorm:"column:to_uid"`
-	ApplyType  int8   `gorm:"column:apply_type"`
+	ToUserId   int64  `gorm:"column:to_uid"`     // 存储uid 或 群id
+	ApplyType  int8   `gorm:"column:apply_type"` // 1->好友申请， 2->群申请
 	Status     int8   `gorm:"column:status"`
 	Content    string `gorm:"column:content"`
 

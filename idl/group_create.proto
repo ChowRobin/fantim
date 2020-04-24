@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package vo;
+
+message group_create_request {
+    string name = 1;
+    string avatar = 2;
+    string description = 3;
+    repeated int64 members = 4;
+}
+
+message group_create_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+    int64 group_id = 3;
+}

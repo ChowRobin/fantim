@@ -3,9 +3,10 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/ChowRobin/fantim/constant"
 	"sync"
 	"time"
+
+	"github.com/ChowRobin/fantim/constant"
 )
 
 /*
@@ -67,10 +68,15 @@ func GenId() int64 {
 	return id
 }
 
-func GenConversationId(sender, receiver int64) string {
-	if sender < receiver {
-		return fmt.Sprintf(constant.ConversationIdPatternSingle, sender, receiver)
-	} else {
-		return fmt.Sprintf(constant.ConversationIdPatternSingle, receiver, sender)
+func GenConversationId(conversationType int32, sender, receiver int64) string {
+	switch conversationType {
+	case constant.ConversationTypeSingle:
+		if sender < receiver {
+			return fmt.Sprintf(constant.ConversationIdPatternSingle, sender, receiver)
+		} else {
+			return fmt.Sprintf(constant.ConversationIdPatternSingle, receiver, sender)
+		}
+	case constant.ConversationTypeGroup:
+		return fmt.Sprintf(constant.ConversationIdPatternGroup, sender, receiver)
 	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/ChowRobin/fantim/middleware"
 	"github.com/ChowRobin/fantim/views/connection"
+	"github.com/ChowRobin/fantim/views/group"
 	"github.com/ChowRobin/fantim/views/message"
 	"github.com/ChowRobin/fantim/views/relation"
 	"github.com/ChowRobin/fantim/views/user"
@@ -45,6 +46,12 @@ func main() {
 	r.POST("/relation/apply/update/", middleware.ApiDecorator(relation.UpdateApply, needLogin))
 	r.GET("/relation/apply/list/", middleware.ApiDecorator(relation.ListApply, needLogin))
 	r.GET("/relation/friend/list/", middleware.ApiDecorator(relation.ListFriend, needLogin))
+
+	r.POST("/group/create/", middleware.ApiDecorator(group.Create, needLogin))
+	r.GET("/group/list/", middleware.ApiDecorator(group.List, needLogin))
+	r.GET("/group/member/list/", middleware.ApiDecorator(group.ListMembers, needLogin))
+	r.GET("/group/search/", middleware.ApiDecorator(group.Search, needLogin))
+	r.POST("/group/apply/update/", middleware.ApiDecorator(relation.UpdateGroupApply, needLogin))
 
 	_ = r.Run() // 监听并在 0.0.0.0:8080 上启动服务
 }

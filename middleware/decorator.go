@@ -3,6 +3,8 @@ package middleware
 import (
 	"log"
 
+	"github.com/ChowRobin/fantim/constant/status"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -34,10 +36,7 @@ func ApiDecorator(apiFunc ApiFunc, options ...ApiOption) func(*gin.Context) {
 					//}
 
 					if uid == nil || uid == 0 {
-						resp = map[string]interface{}{
-							"status_code":    5,
-							"status_message": "user not login",
-						}
+						resp = status.FillResp(resp, status.ErrUserNotLogin)
 						return
 					}
 					log.Printf("[ApiDecorator] uid=%d", uid)

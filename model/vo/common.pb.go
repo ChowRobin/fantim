@@ -8,20 +8,28 @@ Package vo is a generated protocol buffer package.
 It is generated from these files:
 	common.proto
 	friend_list.proto
+	group_create.proto
+	group_list.proto
+	group_member_list.proto
+	group_search.proto
 	login.proto
 	message_pull.proto
+	message_search.proto
 	message_send.proto
 	relation_apply_create.proto
 	relation_apply_list.proto
 	relation_apply_update.proto
 	sign_up.proto
 	user_info.proto
+	user_search.proto
 
 It has these top-level messages:
 	User
 	MessageBody
 	PushMessage
 	RelationApply
+	GroupInfo
+	GroupMember
 */
 package vo
 
@@ -250,4 +258,82 @@ func (m *RelationApply) GetFromUserInfo() *User {
 		return m.FromUserInfo
 	}
 	return nil
+}
+
+type GroupInfo struct {
+	GroupId     int64  `protobuf:"varint,1,opt,name=group_id,json=groupId" json:"group_id,omitempty"`
+	OwnerUid    int64  `protobuf:"varint,2,opt,name=owner_uid,json=ownerUid" json:"owner_uid,omitempty"`
+	Name        string `protobuf:"bytes,3,opt,name=name" json:"name,omitempty"`
+	Avatar      string `protobuf:"bytes,4,opt,name=avatar" json:"avatar,omitempty"`
+	Description string `protobuf:"bytes,5,opt,name=description" json:"description,omitempty"`
+	UserRole    int32  `protobuf:"varint,6,opt,name=user_role,json=userRole" json:"user_role,omitempty"`
+}
+
+func (m *GroupInfo) Reset()         { *m = GroupInfo{} }
+func (m *GroupInfo) String() string { return proto.CompactTextString(m) }
+func (*GroupInfo) ProtoMessage()    {}
+
+func (m *GroupInfo) GetGroupId() int64 {
+	if m != nil {
+		return m.GroupId
+	}
+	return 0
+}
+
+func (m *GroupInfo) GetOwnerUid() int64 {
+	if m != nil {
+		return m.OwnerUid
+	}
+	return 0
+}
+
+func (m *GroupInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *GroupInfo) GetAvatar() string {
+	if m != nil {
+		return m.Avatar
+	}
+	return ""
+}
+
+func (m *GroupInfo) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *GroupInfo) GetUserRole() int32 {
+	if m != nil {
+		return m.UserRole
+	}
+	return 0
+}
+
+type GroupMember struct {
+	UserInfo *User `protobuf:"bytes,1,opt,name=user_info,json=userInfo" json:"user_info,omitempty"`
+	UserRole int32 `protobuf:"varint,2,opt,name=user_role,json=userRole" json:"user_role,omitempty"`
+}
+
+func (m *GroupMember) Reset()         { *m = GroupMember{} }
+func (m *GroupMember) String() string { return proto.CompactTextString(m) }
+func (*GroupMember) ProtoMessage()    {}
+
+func (m *GroupMember) GetUserInfo() *User {
+	if m != nil {
+		return m.UserInfo
+	}
+	return nil
+}
+
+func (m *GroupMember) GetUserRole() int32 {
+	if m != nil {
+		return m.UserRole
+	}
+	return 0
 }

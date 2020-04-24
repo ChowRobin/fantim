@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package vo;
+
+import "common.proto";
+
+message group_member_list_request {
+    int64 group_id = 1;
+}
+
+message group_member_list_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+    repeated GroupMember members = 3;
+}

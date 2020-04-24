@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package vo;
+
+import "common.proto";
+
+message message_search_request {
+    int64 receiver = 1;
+    string cursor = 2; // msg_id
+    int32 count = 3;
+    string conversation_id = 4;
+}
+
+message message_search_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+    repeated MessageBody message_list = 3;
+    string cursor = 4;
+    bool has_more = 5;
+}

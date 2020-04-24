@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package vo;
+
+import "common.proto";
+
+message group_search_request {
+    string name = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+}
+
+message group_search_response {
+    int32 status_code = 1;
+    string status_msg = 2;
+    repeated GroupInfo groups = 3;
+    int32 total_num = 4;
+}

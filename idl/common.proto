@@ -37,3 +37,17 @@ message RelationApply {
     int64 apply_id = 6;
     User from_user_info = 7;
 }
+
+message GroupInfo {
+    int64 group_id = 1;
+    int64 owner_uid = 2;
+    string name = 3;
+    string avatar = 4;
+    string description = 5;
+    int32 user_role = 6; // 当前用户在群中的角色
+}
+
+message GroupMember {
+    User user_info = 1;
+    int32 user_role = 2; // 用户在群中的角色
+}
