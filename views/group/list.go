@@ -2,6 +2,7 @@ package group
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/ChowRobin/fantim/constant/status"
 	"github.com/ChowRobin/fantim/model/po"
@@ -23,6 +24,7 @@ func List(c *gin.Context) interface{} {
 	for _, p := range groupPoList {
 		result = append(result, &vo.GroupInfo{
 			GroupId:     p.GroupMember.GroupId,
+			GroupIdStr:  strconv.FormatInt(p.GroupMember.GroupId, 10),
 			OwnerUid:    p.OwnerId,
 			Name:        p.Name,
 			Avatar:      p.Avatar,

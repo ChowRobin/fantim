@@ -28,6 +28,9 @@ func Search(c *gin.Context) interface{} {
 		log.Printf("[GroupSearch] po.CountGroupByName failed. err=%v", err)
 		return status.FillResp(resp, status.ErrServiceInternal)
 	}
+	if totalNum == 0 {
+		return status.FillResp(resp, status.Success)
+	}
 
 	if (page-1)*pageSize >= int(totalNum) {
 		return status.FillResp(resp, status.ErrInvalidPageParam)
@@ -59,6 +62,7 @@ func Search(c *gin.Context) interface{} {
 	for _, g := range groups {
 		groupVo := &vo.GroupInfo{
 			GroupId:     g.GroupId,
+			GroupIdStr:  strconv.FormatInt(g.GroupId, 10),
 			OwnerUid:    g.OwnerId,
 			Name:        g.Name,
 			Avatar:      g.Avatar,

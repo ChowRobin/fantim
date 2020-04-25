@@ -2,6 +2,7 @@ package constant
 
 const (
 	RelationApplyTypeFriend = 1
+	RelationApplyTypeGroup  = 2
 )
 
 const (

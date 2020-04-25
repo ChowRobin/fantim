@@ -5,6 +5,7 @@ package vo;
 message relation_apply_create_request {
     int64 to_user_id = 1;
     int32 apply_type = 2;
+    string group_id_str = 3;
 }
 
 message relation_apply_create_response {

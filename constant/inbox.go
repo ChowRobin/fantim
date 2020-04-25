@@ -16,7 +16,7 @@ const (
 
 const (
 	ConversationIdPatternSingle = "0:%d:%d" // 私聊
-	ConversationIdPatternGroup  = "1:%d:%d" // 群聊 userId : groupId
+	ConversationIdPatternGroup  = "1:%d"    // 群聊 groupId
 	ConversationTypeSingle      = 0         // 私聊
 	ConversationTypeGroup       = 1         // 群聊
 )

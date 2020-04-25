@@ -198,13 +198,14 @@ func (m *PushMessage) GetIndex() int32 {
 }
 
 type RelationApply struct {
-	FromUserId   int64  `protobuf:"varint,1,opt,name=from_user_id,json=fromUserId" json:"from_user_id,omitempty"`
-	ToUserId     int64  `protobuf:"varint,2,opt,name=to_user_id,json=toUserId" json:"to_user_id,omitempty"`
-	ApplyType    int32  `protobuf:"varint,3,opt,name=apply_type,json=applyType" json:"apply_type,omitempty"`
-	Status       int32  `protobuf:"varint,4,opt,name=status" json:"status,omitempty"`
-	Content      string `protobuf:"bytes,5,opt,name=content" json:"content,omitempty"`
-	ApplyId      int64  `protobuf:"varint,6,opt,name=apply_id,json=applyId" json:"apply_id,omitempty"`
-	FromUserInfo *User  `protobuf:"bytes,7,opt,name=from_user_info,json=fromUserInfo" json:"from_user_info,omitempty"`
+	FromUserId   int64      `protobuf:"varint,1,opt,name=from_user_id,json=fromUserId" json:"from_user_id,omitempty"`
+	ToUserId     int64      `protobuf:"varint,2,opt,name=to_user_id,json=toUserId" json:"to_user_id,omitempty"`
+	ApplyType    int32      `protobuf:"varint,3,opt,name=apply_type,json=applyType" json:"apply_type,omitempty"`
+	Status       int32      `protobuf:"varint,4,opt,name=status" json:"status,omitempty"`
+	Content      string     `protobuf:"bytes,5,opt,name=content" json:"content,omitempty"`
+	ApplyId      int64      `protobuf:"varint,6,opt,name=apply_id,json=applyId" json:"apply_id,omitempty"`
+	FromUserInfo *User      `protobuf:"bytes,7,opt,name=from_user_info,json=fromUserInfo" json:"from_user_info,omitempty"`
+	GroupInfo    *GroupInfo `protobuf:"bytes,8,opt,name=group_info,json=groupInfo" json:"group_info,omitempty"`
 }
 
 func (m *RelationApply) Reset()         { *m = RelationApply{} }
@@ -260,6 +261,13 @@ func (m *RelationApply) GetFromUserInfo() *User {
 	return nil
 }
 
+func (m *RelationApply) GetGroupInfo() *GroupInfo {
+	if m != nil {
+		return m.GroupInfo
+	}
+	return nil
+}
+
 type GroupInfo struct {
 	GroupId     int64  `protobuf:"varint,1,opt,name=group_id,json=groupId" json:"group_id,omitempty"`
 	OwnerUid    int64  `protobuf:"varint,2,opt,name=owner_uid,json=ownerUid" json:"owner_uid,omitempty"`
@@ -267,6 +275,7 @@ type GroupInfo struct {
 	Avatar      string `protobuf:"bytes,4,opt,name=avatar" json:"avatar,omitempty"`
 	Description string `protobuf:"bytes,5,opt,name=description" json:"description,omitempty"`
 	UserRole    int32  `protobuf:"varint,6,opt,name=user_role,json=userRole" json:"user_role,omitempty"`
+	GroupIdStr  string `protobuf:"bytes,7,opt,name=group_id_str,json=groupIdStr" json:"group_id_str,omitempty"`
 }
 
 func (m *GroupInfo) Reset()         { *m = GroupInfo{} }
@@ -313,6 +322,13 @@ func (m *GroupInfo) GetUserRole() int32 {
 		return m.UserRole
 	}
 	return 0
+}
+
+func (m *GroupInfo) GetGroupIdStr() string {
+	if m != nil {
+		return m.GroupIdStr
+	}
+	return ""
 }
 
 type GroupMember struct {

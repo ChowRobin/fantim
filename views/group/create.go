@@ -2,6 +2,7 @@ package group
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/ChowRobin/fantim/constant/status"
 	"github.com/ChowRobin/fantim/model/po"
@@ -59,6 +60,7 @@ func Create(c *gin.Context) interface{} {
 	}
 
 	resp.GroupId = groupId
+	resp.GroupIdStr = strconv.FormatInt(groupId, 10)
 
 	return status.FillResp(resp, status.Success)
 }

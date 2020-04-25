@@ -54,6 +54,7 @@ type GroupCreateResponse struct {
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode" json:"status_code,omitempty"`
 	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty"`
 	GroupId    int64  `protobuf:"varint,3,opt,name=group_id,json=groupId" json:"group_id,omitempty"`
+	GroupIdStr string `protobuf:"bytes,4,opt,name=group_id_str,json=groupIdStr" json:"group_id_str,omitempty"`
 }
 
 func (m *GroupCreateResponse) Reset()         { *m = GroupCreateResponse{} }
@@ -79,4 +80,11 @@ func (m *GroupCreateResponse) GetGroupId() int64 {
 		return m.GroupId
 	}
 	return 0
+}
+
+func (m *GroupCreateResponse) GetGroupIdStr() string {
+	if m != nil {
+		return m.GroupIdStr
+	}
+	return ""
 }

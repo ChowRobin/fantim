@@ -77,6 +77,7 @@ func GenConversationId(conversationType int32, sender, receiver int64) string {
 			return fmt.Sprintf(constant.ConversationIdPatternSingle, receiver, sender)
 		}
 	case constant.ConversationTypeGroup:
-		return fmt.Sprintf(constant.ConversationIdPatternGroup, sender, receiver)
+		return fmt.Sprintf(constant.ConversationIdPatternGroup, receiver)
 	}
+	return ""
 }

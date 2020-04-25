@@ -12,8 +12,9 @@ var _ = proto.Marshal
 var _ = math.Inf
 
 type RelationApplyCreateRequest struct {
-	ToUserId  int64 `protobuf:"varint,1,opt,name=to_user_id,json=toUserId" json:"to_user_id,omitempty"`
-	ApplyType int32 `protobuf:"varint,2,opt,name=apply_type,json=applyType" json:"apply_type,omitempty"`
+	ToUserId   int64  `protobuf:"varint,1,opt,name=to_user_id,json=toUserId" json:"to_user_id,omitempty"`
+	ApplyType  int32  `protobuf:"varint,2,opt,name=apply_type,json=applyType" json:"apply_type,omitempty"`
+	GroupIdStr string `protobuf:"bytes,3,opt,name=group_id_str,json=groupIdStr" json:"group_id_str,omitempty"`
 }
 
 func (m *RelationApplyCreateRequest) Reset()         { *m = RelationApplyCreateRequest{} }
@@ -32,6 +33,13 @@ func (m *RelationApplyCreateRequest) GetApplyType() int32 {
 		return m.ApplyType
 	}
 	return 0
+}
+
+func (m *RelationApplyCreateRequest) GetGroupIdStr() string {
+	if m != nil {
+		return m.GroupIdStr
+	}
+	return ""
 }
 
 type RelationApplyCreateResponse struct {

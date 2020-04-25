@@ -92,7 +92,7 @@ func ListMembersByGroupId(ctx context.Context, groupId int64) (members []*GroupM
 	defer conn.Close()
 
 	conn = conn.Debug()
-	conn = conn.Table("im_group_member gm").Joins("left join user_base u on gm.uid=u.uid")
+	conn = conn.Select("*").Table("im_group_member gm").Joins("left join user_base u on gm.uid=u.uid")
 	err = conn.Where("gm.group_id = ?", groupId).Find(&members).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -111,8 +111,27 @@ func ListGroupByUserId(ctx context.Context, userId int64) (groups []*GroupMember
 	defer conn.Close()
 
 	conn = conn.Debug()
-	conn = conn.Table("im_group_member gm").Joins("left join im_group_base g on gm.group_id=g.group_id")
+	conn = conn.Select("*").Table("im_group_member gm").Joins("left join im_group_base g on gm.group_id=g.group_id")
 	err = conn.Where("gm.uid = ?", userId).Find(&groups).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			err = nil
+			return
+		}
+	}
+	return
+}
+
+func ListGroupByCondition(ctx context.Context, userId int64, roles []int32) (groups []*GroupMember, err error) {
+	conn, err := client.DBConn(ctx)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+
+	conn = conn.Debug()
+
+	err = conn.Model(&GroupMember{}).Where("uid = ? and role in (?)", userId, roles).Find(&groups).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			err = nil

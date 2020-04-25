@@ -2,7 +2,6 @@ package po
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/ChowRobin/fantim/client"
@@ -66,18 +65,16 @@ func (ua *UserRelationApply) GetByCondition(ctx context.Context) error {
 		ua.FromUserId, ua.ToUserId, ua.ApplyType, ua.Status).First(ua).Error
 }
 
-func ListUserRelationApplyPageByCondition(ctx context.Context, fromUid, toUid *int64, queryStatus []int32, applyType, page, pageSize int32) ([]*UserRelationApply, error) {
+func ListUserRelationApplyPageByCondition(ctx context.Context, fromUid int64, toIds []int64, queryStatus []int32, applyType, page, pageSize int32) ([]*UserRelationApply, error) {
 	conn, err := client.DBConn(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
-	if fromUid != nil {
+	if len(toIds) == 0 {
 		conn = conn.Where("from_uid=?", fromUid)
-	} else if toUid != nil {
-		conn = conn.Where("to_uid=?", toUid)
 	} else {
-		return nil, errors.New("from to uid both nil")
+		conn = conn.Where("to_uid in (?)", toIds)
 	}
 	conn = conn.Where("apply_type=?", applyType)
 	if len(queryStatus) > 0 {
@@ -91,18 +88,16 @@ func ListUserRelationApplyPageByCondition(ctx context.Context, fromUid, toUid *i
 	return result, err
 }
 
-func CountUserRelationApplyPageByCondition(ctx context.Context, fromUid, toUid *int64, queryStatus []int32, applyType int32) (int32, error) {
+func CountUserRelationApplyPageByCondition(ctx context.Context, fromUid int64, toIds []int64, queryStatus []int32, applyType int32) (int32, error) {
 	conn, err := client.DBConn(ctx)
 	if err != nil {
 		return 0, err
 	}
 	defer conn.Close()
-	if fromUid != nil {
+	if len(toIds) == 0 {
 		conn = conn.Where("from_uid=?", fromUid)
-	} else if toUid != nil {
-		conn = conn.Where("to_uid=?", toUid)
 	} else {
-		return 0, errors.New("from to uid both nil")
+		conn = conn.Where("to_uid in (?)", toIds)
 	}
 	conn = conn.Where("apply_type=?", applyType)
 	if len(queryStatus) > 0 {

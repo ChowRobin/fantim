@@ -36,6 +36,7 @@ message RelationApply {
     string content = 5;
     int64 apply_id = 6;
     User from_user_info = 7;
+    GroupInfo group_info = 8;
 }
 
 message GroupInfo {
@@ -45,6 +46,7 @@ message GroupInfo {
     string avatar = 4;
     string description = 5;
     int32 user_role = 6; // 当前用户在群中的角色
+    string group_id_str = 7; // 兼容前端精度
 }
 
 message GroupMember {

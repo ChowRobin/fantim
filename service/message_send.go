@@ -119,8 +119,10 @@ func SendMessage(ctx context.Context, msg *vo.MessageBody) (msgId int64, es *sta
 
 func checkMsg(msg *vo.MessageBody) *status.ErrStatus {
 	checkConvId := util.GenConversationId(msg.ConversationType, msg.Sender, msg.Receiver)
-	if checkConvId != msg.ConversationId {
-		return status.ErrInvalidParam
+	if msg.ConversationType == constant.ConversationTypeSingle {
+		if checkConvId != msg.ConversationId {
+			return status.ErrInvalidParam
+		}
 	}
 	return status.Success
 }
@@ -156,6 +158,6 @@ func HandleGroupMessage(ctx context.Context, msg *vo.MessageBody) error {
 			}
 		}(&member.GroupMember)
 	}
-	wg.Done()
+	wg.Wait()
 	return nil
 }

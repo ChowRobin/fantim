@@ -2,6 +2,7 @@ package relation
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/ChowRobin/fantim/constant"
 
@@ -25,13 +26,19 @@ func CreateApply(c *gin.Context) interface{} {
 		return status.FillResp(resp, status.ErrInvalidParam)
 	}
 
-	if userId == req.ToUserId || req.ApplyType != constant.RelationApplyTypeFriend {
-		return status.FillResp(resp, status.ErrInvalidParam)
+	var toId int64
+	if req.ApplyType == constant.RelationApplyTypeFriend {
+		if userId == req.ToUserId {
+			return status.FillResp(resp, status.ErrInvalidParam)
+		}
+		toId = req.ToUserId
+	} else if req.ApplyType == constant.RelationApplyTypeGroup {
+		toId, _ = strconv.ParseInt(req.GroupIdStr, 10, 64)
 	}
 
 	applyPo := &po.UserRelationApply{
 		FromUserId: userId,
-		ToUserId:   req.ToUserId,
+		ToUserId:   toId,
 		ApplyType:  int8(req.ApplyType),
 		Status:     int8(0),
 	}

@@ -13,4 +13,5 @@ message group_create_response {
     int32 status_code = 1;
     string status_msg = 2;
     int64 group_id = 3;
+    string group_id_str = 4; // 兼容前端精度
 }

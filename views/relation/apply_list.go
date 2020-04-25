@@ -1,8 +1,11 @@
 package relation
 
 import (
+	"fmt"
 	"log"
 	"strconv"
+
+	"github.com/ChowRobin/fantim/constant"
 
 	"github.com/ChowRobin/fantim/constant/status"
 	"github.com/ChowRobin/fantim/model/po"
@@ -31,19 +34,29 @@ func ListApply(c *gin.Context) interface{} {
 		return status.FillResp(resp, status.ErrInvalidParam)
 	}
 
-	var fromUserPtr, toUserPtr *int64
+	var toIds []int64
 	if fromUserId != 0 {
-		fromUserPtr = &fromUserId
 		// 不允许查其他人的申请列表
 		if fromUserId != userId {
 			return status.FillResp(resp, status.ErrInvalidParam)
 		}
 	} else {
-		toUserPtr = &userId
+		if applyType == 1 { // 好友申请
+			toIds = append(toIds, userId)
+		} else if applyType == 2 { // 加群申请
+			groups, err := po.ListGroupByCondition(c, userId, []int32{2})
+			if err != nil {
+				log.Printf("[ListApply] ListGroupByCondition failed. err=%v", err)
+				return status.FillResp(resp, status.ErrServiceInternal)
+			}
+			for _, g := range groups {
+				toIds = append(toIds, g.GroupId)
+			}
+		}
 	}
 
 	// 查询总数
-	totalNum, err := po.CountUserRelationApplyPageByCondition(c, fromUserPtr, toUserPtr, queryStatus, int32(applyType))
+	totalNum, err := po.CountUserRelationApplyPageByCondition(c, fromUserId, toIds, queryStatus, int32(applyType))
 	if err != nil {
 		log.Printf("[ListApply] po.CountUserRelationApplyPageByCondition failed. err=%v", err)
 		return status.FillResp(resp, status.ErrServiceInternal)
@@ -57,10 +70,33 @@ func ListApply(c *gin.Context) interface{} {
 	}
 
 	// 分页查询记录
-	applyPoList, err := po.ListUserRelationApplyPageByCondition(c, fromUserPtr, toUserPtr, queryStatus, int32(applyType), int32(page), int32(pageSize))
+	applyPoList, err := po.ListUserRelationApplyPageByCondition(c, fromUserId, toIds, queryStatus, int32(applyType), int32(page), int32(pageSize))
 	if err != nil {
 		log.Printf("[ListApply] po.ListUserRelationApplyPageByCondition failed. err=%v", err)
 		return status.FillResp(resp, status.ErrServiceInternal)
+	}
+
+	groupMap := make(map[int64]*vo.GroupInfo)
+	if len(applyPoList) > 0 && applyType == constant.RelationApplyTypeGroup {
+		reqGroupIds := make([]int64, 0, len(applyPoList))
+		for _, apply := range applyPoList {
+			reqGroupIds = append(reqGroupIds, apply.ToUserId)
+		}
+		groupsPo, err := po.MultiGetGroup(c, reqGroupIds)
+		if err != nil {
+			log.Printf("[ListApply] po.MultiGetGroup failed. err=%v", err)
+			return status.FillResp(resp, status.ErrServiceInternal)
+		}
+		for _, g := range groupsPo {
+			groupMap[g.GroupId] = &vo.GroupInfo{
+				GroupId:     g.GroupId,
+				OwnerUid:    g.OwnerId,
+				Name:        g.Name,
+				Avatar:      g.Avatar,
+				Description: g.Description,
+				GroupIdStr:  fmt.Sprintf("%d", g.GroupId),
+			}
+		}
 	}
 
 	for _, applyPo := range applyPoList {
@@ -71,6 +107,9 @@ func ListApply(c *gin.Context) interface{} {
 			Status:     int32(applyPo.Status),
 			Content:    applyPo.Content,
 			ApplyId:    applyPo.Id,
+		}
+		if applyType == constant.RelationApplyTypeGroup {
+			applyVo.GroupInfo = groupMap[applyPo.ToUserId]
 		}
 		resp.ApplyList = append(resp.ApplyList, applyVo)
 	}

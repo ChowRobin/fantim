@@ -2,6 +2,7 @@ package po
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/ChowRobin/fantim/client"
@@ -46,6 +47,24 @@ func (g *Group) GetByGroupId(ctx context.Context) error {
 	return err
 }
 
+func MultiGetGroup(ctx context.Context, groupIds []int64) (groups []*Group, err error) {
+	conn, err := client.DBConn(ctx)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+
+	conn = conn.Debug()
+	err = conn.Model(&Group{}).Where("group_id in (?)", groupIds).Find(&groups).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			err = nil
+			return
+		}
+	}
+	return
+}
+
 func SearchGroupByName(ctx context.Context, searchName string, page, pageSize int32) (groups []*Group, err error) {
 	conn, err := client.DBConn(ctx)
 	if err != nil {
@@ -53,7 +72,9 @@ func SearchGroupByName(ctx context.Context, searchName string, page, pageSize in
 	}
 	defer conn.Close()
 
-	err = conn.Model(&Group{}).Where("MATCH (name) AGAINST(\"?*\" in boolean mode)", searchName).
+	conn = conn.Debug()
+	statement := fmt.Sprintf("MATCH (name) AGAINST('%s*' in boolean mode)", searchName)
+	err = conn.Model(&Group{}).Where(statement).
 		Offset((page - 1) * pageSize).Limit(pageSize).Find(&groups).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -72,7 +93,9 @@ func CountGroupByName(ctx context.Context, searchName string) (totalNum int64, e
 	}
 	defer conn.Close()
 
-	err = conn.Model(&Group{}).Where("MATCH (name) AGAINST(\"?*\" in boolean mode)", searchName).Count(&totalNum).Error
+	conn = conn.Debug()
+	statement := fmt.Sprintf("MATCH (name) AGAINST('%s*' in boolean mode)", searchName)
+	err = conn.Model(&Group{}).Where(statement).Count(&totalNum).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			err = nil
