@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/ChowRobin/fantim/constant"
 	"github.com/ChowRobin/fantim/model/po"
@@ -62,9 +63,18 @@ func (b *Inbox) Pull(cursor, count int64) ([]*vo.MessageBody, error) {
 		msgList, err := PullMessage(b.Key, start, stop)
 		return UserMessageListToVo(msgList), err
 	case constant.InboxTypeConversation:
-		msgPoList, err := po.ListByConversationAndMsgId(b.Ctx, b.Key, cursor, count)
-		if err != nil {
-			return nil, err
+		var msgPoList []*po.MessageRecord
+		var err error
+		if cursor > 0 {
+			msgPoList, err = po.ListByConversationAndMsgId(b.Ctx, b.Key, cursor, count)
+			if err != nil {
+				return nil, err
+			}
+		} else if cursor == -1 {
+			msgPoList, err = po.ListByConversationAndCreateTime(b.Ctx, b.Key, count, time.Now().UnixNano())
+			if err != nil {
+				return nil, err
+			}
 		}
 		return po.MessagePoListToVo(msgPoList), err
 	default:

@@ -81,7 +81,7 @@ func ListUserRelationApplyPageByCondition(ctx context.Context, fromUid int64, to
 		conn = conn.Where("status in (?)", queryStatus)
 	}
 	var result []*UserRelationApply
-	err = conn.Model(&UserRelationApply{}).Offset((page - 1) * pageSize).Limit(pageSize).Find(&result).Error
+	err = conn.Model(&UserRelationApply{}).Order("create_time desc").Offset((page - 1) * pageSize).Limit(pageSize).Find(&result).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}

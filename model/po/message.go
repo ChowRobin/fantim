@@ -99,3 +99,19 @@ func ListByConversationAndMsgId(ctx context.Context, conversationId string, msgI
 	}
 	return list, err
 }
+
+func ListByConversationAndCreateTime(ctx context.Context, conversationId string, count, createTime int64) ([]*MessageRecord, error) {
+	conn, err := client.DBConn(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var list []*MessageRecord
+	defer conn.Close()
+	conn = conn.Debug()
+	err = conn.Where("conversation_id=? and create_time < ?", conversationId, createTime).Limit(count).
+		Order("msg_id desc").Find(&list).Error
+	if err == gorm.ErrRecordNotFound {
+		return list, nil
+	}
+	return list, err
+}
