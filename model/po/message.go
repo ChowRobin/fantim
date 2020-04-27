@@ -115,3 +115,19 @@ func ListByConversationAndCreateTime(ctx context.Context, conversationId string,
 	}
 	return list, err
 }
+
+func MultiGetMessage(ctx context.Context, conversationId string, msgIds []int64) ([]*MessageRecord, error) {
+	conn, err := client.DBConn(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var list []*MessageRecord
+	defer conn.Close()
+	conn = conn.Debug()
+	err = conn.Where("conversation_id=? and msg_id in (?)", conversationId, msgIds).
+		Order("msg_id asc").Find(&list).Error
+	if err == gorm.ErrRecordNotFound {
+		return list, nil
+	}
+	return list, err
+}

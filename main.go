@@ -40,6 +40,7 @@ func main() {
 
 	r.POST("/message/send/", middleware.ApiDecorator(message.Send, needLogin))
 	r.POST("/message/pull/", middleware.ApiDecorator(message.Pull, needLogin))
+	r.GET("/message/search/", middleware.ApiDecorator(message.Search, needLogin))
 	r.GET("/websocket/create/", connection.Handle)
 
 	r.POST("/relation/apply/create/", middleware.ApiDecorator(relation.CreateApply, needLogin))

@@ -44,6 +44,19 @@ func SendMessage(ctx context.Context, msg *vo.MessageBody) (msgId int64, es *sta
 	msg.MsgIdStr = strconv.FormatInt(msg.MsgId, 10)
 	msg.CreateTime = time.Now().Unix()
 
+	// 并发创建索引，优化可用mq解耦
+	msgIndex := &bo.MessageIndex{
+		MsgId:          msg.MsgId,
+		ConversationId: msg.ConversationId,
+		Content:        msg.Content,
+	}
+	go func() {
+		err := msgIndex.Create(ctx)
+		if err != nil {
+			log.Printf("[SendMessage] msgIndex.Create failed. err=%v", err)
+		}
+	}()
+
 	// 写入会话链
 	convInbox := &bo.Inbox{
 		Ctx:       ctx,
